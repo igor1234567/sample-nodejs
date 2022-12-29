@@ -1,21 +1,23 @@
 pipeline {
         agent {
   label 'centos7'
-} 
+        } 
 
     stages {
         stage('Checkout Code') {
             steps {
                 cleanWs()
-                checkout([$class: 'GitSCM', branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/digitalocean/sample-nodejs.git']]])
+                checkout([$class: 'GitSCM', branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/igor1234567/sample-nodejs.git']]])
             }
         }
-        stage('Build') {
+        stage('build docker') {
+                steps {
+                    sh 'docker build -t myimage:1.0'
+                }
+            }
+        stage('run') {
             steps {
-                sh ''' export APP=DEVELOP;  
-                    npm install;
-                    ls;
-                    echo $APP; '''
+                sh 'docker run myimage:1.0'
                
             }
         }
@@ -33,10 +35,20 @@ pipeline {
             }
         }
     }
-
     post {
         always {
-            chuckNorris()
-        }
+             chuckNorris()  
+              
+            }
+        aborted {
+             slackSend channel: '#general', message: 'build was aborted'
+         }
+        failure {
+              slackSend channel: '#general', message: 'build is failing '
+         }
+        fixed {
+          slackSend channel: '#general', message: 'someone fixed the build, now its ok.'
+         }
     }
+
 }
