@@ -17,7 +17,7 @@ pipeline {
             }
         stage('run') {
             steps {
-                sh "docker run -itd myimage:${BUILD_ID}"
+                sh "docker run -itd -p 8080:3000 myimage:${BUILD_ID}"
                
             }
         }
