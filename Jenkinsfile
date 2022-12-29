@@ -12,18 +12,18 @@ pipeline {
         }
         stage('build docker') {
                 steps {
-                    sh 'docker build -t myimage:1.0'
+                    sh "docker build -t myimage:${BUILD_ID}"
                 }
             }
         stage('run') {
             steps {
-                sh 'docker run myimage:1.0'
+                sh "docker run -itd myimage:${BUILD_ID}"
                
             }
         }
         stage('Test') {
             steps {
-                sh 'nohup node index.js &'
+                //sh 'nohup node index.js &'
                 sh 'curl localhost:3000'
    
             }
@@ -40,7 +40,7 @@ pipeline {
              chuckNorris()  
               
             }
-        aborted {
+        /*aborted {
              slackSend channel: '#general', message: 'build was aborted'
          }
         failure {
@@ -48,7 +48,7 @@ pipeline {
          }
         fixed {
           slackSend channel: '#general', message: 'someone fixed the build, now its ok.'
-         }
+         }*/
     }
 
 }
