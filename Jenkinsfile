@@ -24,7 +24,7 @@ pipeline {
         stage('Test') {
             steps {
                 //sh 'nohup node index.js &'
-                sh 'curl localhost:3000'
+                sh 'curl localhost:8080'
    
             }
         }
